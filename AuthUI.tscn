@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsubtd6gev64o"]
+
+[ext_resource type="Script" uid="uid://022kwi1qitit" path="res://AuthUI.gd" id="1_463vv"]
+
+[node name="SigninUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_463vv")
+
+[node name="EmailInput" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 156.0
+offset_right = 841.0
+offset_bottom = 206.0
+theme_override_font_sizes/font_size = 30
+placeholder_text = "E-mail"
+
+[node name="PasswordInput" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 220.0
+offset_right = 842.0
+offset_bottom = 270.0
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Password"
+secret = true
+
+[node name="SigninButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 286.0
+offset_right = 542.0
+offset_bottom = 336.0
+theme_override_font_sizes/font_size = 30
+text = "Sign in"
+
+[node name="SignupButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 346.0
+offset_right = 542.0
+offset_bottom = 396.0
+theme_override_font_sizes/font_size = 30
+text = "Sign up"
+
+[node name="StatusLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 63.0
+offset_right = 261.0
+offset_bottom = 92.0

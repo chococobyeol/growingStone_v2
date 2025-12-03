@@ -1,48 +1,63 @@
 extends Node
 
-# ▼ 본인 정보 (보여주신 키 그대로 넣었습니다) ▼
+# ▼ 본인 정보 입력 (따옴표 지우지 마세요!) ▼
 const URL = "https://qrfulgjculsbtxgyfzpk.supabase.co"
 const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnVsZ2pjdWxzYnR4Z3lmenBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMzc4MzgsImV4cCI6MjA3OTYxMzgzOH0.H1jMawnCj0p2tJtYDYQICcQkfWpVqF5OsJImrMVlDV8"
-# ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+# ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
-signal login_success
-signal login_failed(error_message)
+signal auth_success
+signal auth_failed(error_message)
 
 func sign_in(email, password):
 	var http = HTTPRequest.new()
 	add_child(http)
-	http.request_completed.connect(_on_request_completed.bind(http))
+	http.request_completed.connect(_on_signin_completed.bind(http))
 	
 	var api_url = URL + "/auth/v1/token?grant_type=password"
 	var headers = ["Content-Type: application/json", "apikey: " + KEY]
 	var body = JSON.stringify({"email": email, "password": password})
 	
-	print("[INFO] 서버에 로그인 요청을 보냅니다...")
+	print("[INFO] Sending Sign In request...")
 	var error = http.request(api_url, headers, HTTPClient.METHOD_POST, body)
-	
 	if error != OK:
-		print("[ERROR] 요청 전송 실패. 에러코드: ", error)
-		emit_signal("login_failed", "HTTP Request Error")
+		print("[ERROR] HTTP Request failed.")
 		http.queue_free()
 
-# 안 쓰는 변수 앞에 언더바(_)를 붙여서 노란 경고를 없앴습니다.
-func _on_request_completed(_result, response_code, _headers, body, http_node):
-	# 서버가 보낸 편지 내용을 뜯어봅니다.
+func sign_up(email, password):
+	var http = HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_signup_completed.bind(http))
+	
+	var api_url = URL + "/auth/v1/signup"
+	var headers = ["Content-Type: application/json", "apikey: " + KEY]
+	var body = JSON.stringify({"email": email, "password": password})
+	
+	print("[INFO] Sending Sign Up request...")
+	var error = http.request(api_url, headers, HTTPClient.METHOD_POST, body)
+	if error != OK:
+		print("[ERROR] HTTP Request failed.")
+		http.queue_free()
+
+func _on_signin_completed(_result, response_code, _headers, body, http_node):
 	var response_string = body.get_string_from_utf8()
 	var response = JSON.parse_string(response_string)
 	
-	print("--- [서버 응답 도착] 코드: ", response_code, " ---")
-	print("--- [내용] ", response_string) 
-
 	if response_code == 200:
-		print("[SUCCESS] 로그인 성공! User ID: ", response.user.id)
-		emit_signal("login_success")
+		print("[SUCCESS] Sign In successful. ID: ", response.user.id)
+		emit_signal("auth_success")
 	elif response_code == 400:
-		# 400 에러가 뜨면 연결은 성공한 것입니다! (비밀번호가 틀렸을 뿐)
-		print("[CHECK] 서버 연결 성공! (비밀번호 틀림 메시지 수신함)")
-		emit_signal("login_failed", "Invalid credentials")
+		print("[ERROR] Sign In failed: Invalid credentials")
+		emit_signal("auth_failed", "Invalid email or password")
 	else:
-		print("[ERROR] 서버 에러 발생: ", response_code)
-		emit_signal("login_failed", "Server Error: " + str(response_code))
-	
+		print("[ERROR] Server Error: ", response_code)
+		emit_signal("auth_failed", "Server Error")
+	http_node.queue_free()
+
+func _on_signup_completed(_result, response_code, _headers, body, http_node):
+	if response_code == 200 or response_code == 201:
+		print("[SUCCESS] Sign Up successful.")
+		emit_signal("auth_success")
+	else:
+		print("[ERROR] Sign Up failed: ", response_code)
+		emit_signal("auth_failed", "Sign Up Failed")
 	http_node.queue_free()
