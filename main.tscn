@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqi0bn2e3ixoq"]
+[gd_scene load_steps=7 format=3 uid="uid://bqi0bn2e3ixoq"]
 
 [ext_resource type="Texture2D" uid="uid://ce2yrworsoa30" path="res://icon.svg" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://dlwgn0ljw3p7g" path="res://Main.gd" id="1_uu6xs"]
+[ext_resource type="Script" uid="uid://n4scky77gla4" path="res://Stone.gd" id="2_cm0pq"]
 [ext_resource type="Shader" uid="uid://bultftaoqgo6n" path="res://Stone.gdshader" id="2_r0du0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cm0pq"]
@@ -17,10 +18,11 @@ radius = 58.249462
 script = ExtResource("1_uu6xs")
 
 [node name="Stone" type="RigidBody2D" parent="."]
-position = Vector2(150, 150)
+position = Vector2(576, 324)
 disable_mode = 2
 input_pickable = true
 gravity_scale = 0.0
+script = ExtResource("2_cm0pq")
 
 [node name="Sprite2D" type="Sprite2D" parent="Stone"]
 material = SubResource("ShaderMaterial_cm0pq")
